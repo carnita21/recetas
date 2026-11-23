@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f97316">
+  <meta name="description" content="Recetario instalable que consulta recetas de cocina desde TheMealDB.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Recetario">
+  <link rel="stylesheet" href="styles.css">
+  <title>Recetario | TheMealDB</title>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img class="brand-icon" src="icons/icon.svg" alt="" aria-hidden="true">
+      <h1>themealdb<span>.com</span></h1>
+    </div>
+  </header>
+
+  <main class="panel">
+    <div class="toolbar">
+      <form id="searchForm" class="search-form" role="search">
+        <input id="searchInput" type="search" placeholder="Escribe una receta (en inglés: chicken, pasta, cake...)" autocomplete="off" aria-label="Buscar receta">
+        <button class="btn btn-search" type="submit">Buscar</button>
+      </form>
+      <button id="favBtn" class="btn btn-fav" type="button" aria-pressed="false">
+        ★ Favoritos <span id="favCount" class="fav-count">0</span>
+      </button>
+      <button id="installBtn" class="btn btn-download" type="button">⬇ Descargar app</button>
+    </div>
+
+    <p id="status" class="status" role="status">Cargando recetas...</p>
+    <section id="recipeGrid" class="recipe-grid" aria-label="Recetas"></section>
+  </main>
+
+  <dialog id="recipeDialog" class="recipe-dialog" aria-labelledby="detailName">
+    <button id="closeDialogBtn" class="dialog-close" aria-label="Cerrar">×</button>
+    <div id="recipeDetails"></div>
+  </dialog>
+
+  <dialog id="installDialog" class="install-dialog" aria-labelledby="installTitle">
+    <h2 id="installTitle">Descargar la app</h2>
+    <p id="installMsg"></p>
+    <ol>
+      <li><strong>Chrome / Edge (PC):</strong> haz clic en el icono de instalar ( ⊕ ) en la barra de direcciones, o en el menú ⋮ → <em>Instalar Recetario</em>.</li>
+      <li><strong>Android (Chrome):</strong> menú ⋮ → <em>Agregar a la pantalla principal</em> o <em>Instalar app</em>.</li>
+      <li><strong>iPhone (Safari):</strong> botón Compartir → <em>Agregar a inicio</em>.</li>
+    </ol>
+    <button id="closeInstallBtn" class="btn btn-search" type="button">Entendido</button>
+  </dialog>
+
+  <footer>Recetas e imágenes de <a href="https://www.themealdb.com/" target="_blank" rel="noreferrer">TheMealDB</a></footer>
+  <script src="app.js"></script>
+</body>
+</html>
