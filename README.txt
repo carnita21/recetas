@@ -27,7 +27,11 @@ IMPORTANTE
 - Las PWA necesitan HTTPS o localhost para que funcione el Service Worker
   (abrir index.html con doble clic NO sirve para instalarla).
 - La primera carga necesita internet porque las recetas e imágenes vienen de TheMealDB.
-- El Service Worker guarda los archivos de la app; las recetas no se guardan para uso offline.
+- USO SIN INTERNET: el Service Worker guarda los archivos de la app, cada búsqueda que hagas
+  con internet y las fotos que se vean. Sin conexión puedes repetir esas búsquedas y ver tus
+  favoritos (con foto, ingredientes y pasos). Los videos de YouTube solo funcionan con internet.
+  Para que funcione en el celular, la app debe abrirse con HTTPS (por ejemplo GitHub Pages);
+  desde la IP de tu PC (http://192.168...) el navegador NO activa el Service Worker.
 - La API devuelve nombres e instrucciones en inglés; la interfaz está en español.
   Para buscar por nombre conviene usar palabras en inglés (chicken, beef, cake, soup...).
 - Si cambias archivos y no ves los cambios, sube la versión en CACHE_NAME dentro de service-worker.js.

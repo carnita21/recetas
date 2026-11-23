@@ -32,9 +32,18 @@ const isFavorite = id => favorites.some(meal => meal.idMeal === id);
 
 function toggleFavorite(meal) {
   if (isFavorite(meal.idMeal)) favorites = favorites.filter(item => item.idMeal !== meal.idMeal);
-  else favorites.push(meal);
+  else {
+    favorites.push(meal);
+    cacheImages(meal);
+  }
   saveFavorites();
   if (showingFavorites) render(favorites);
+}
+
+// Descarga las fotos de un favorito para que se vean sin internet (las guarda el service worker).
+function cacheImages(meal) {
+  [`${meal.strMealThumb}/preview`, meal.strMealThumb].forEach(url =>
+    fetch(url, { mode: "no-cors" }).catch(() => {}));
 }
 
 // ---------- Utilidades ----------
@@ -168,7 +177,17 @@ async function search(query) {
     lastResults = data.meals || [];
     render(lastResults);
   } catch (error) {
-    setStatus("No se pudo conectar con TheMealDB. Revisa tu conexión e inténtalo de nuevo.");
+    // Sin internet y esa búsqueda no estaba guardada: se muestran los favoritos.
+    lastResults = [];
+    if (favorites.length) {
+      showingFavorites = true;
+      favBtn.classList.add("active");
+      favBtn.setAttribute("aria-pressed", "true");
+      render(favorites);
+      setStatus("Sin conexión: mostrando tus favoritos guardados.");
+    } else {
+      setStatus("Sin conexión. Solo puedes ver búsquedas que ya hiciste con internet y tus favoritos.");
+    }
   }
 }
 
@@ -225,4 +244,7 @@ if ("serviceWorker" in navigator) {
 
 // Al abrir: favoritos guardados + recetas iniciales (búsqueda vacía = recetas variadas)
 saveFavorites();
+favorites.forEach(cacheImages); // asegura las fotos de los favoritos que ya tenías
 search("");
+
+window.addEventListener("online", () => { if (!lastResults.length && !showingFavorites) search(searchInput.value.trim()); });
