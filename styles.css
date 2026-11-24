@@ -86,6 +86,19 @@ h1 span { color: var(--orange); }
 .install-dialog p { margin: 0 0 12px; color: var(--muted); line-height: 1.5; }
 .install-dialog ol { margin: 0 0 18px; padding-left: 20px; line-height: 1.6; font-size: 14px; }
 
+/* Confirmación al eliminar */
+.confirm-dialog { width: min(400px, calc(100% - 24px)); }
+.confirm-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.btn-danger { background: #dc2626; border-color: #dc2626; color: #fff; }
+.btn-danger:hover { background: #b91c1c; border-color: #b91c1c; }
+
+/* Toast */
+.toast { position: fixed; inset: auto auto 24px 50%; margin: 0; max-width: min(420px, calc(100% - 32px));
+  padding: 12px 18px; border: 2px solid var(--ink); border-radius: 12px; background: var(--ink); color: #fff;
+  font-weight: 600; font-size: 14px; box-shadow: 0 10px 24px #0004; pointer-events: none;
+  opacity: 0; transform: translate(-50%, 20px); transition: opacity .25s, transform .25s; z-index: 1000; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
 footer { padding: 16px; text-align: center; color: var(--muted); font-size: 12px; }
 a { color: var(--orange-dark); }
 

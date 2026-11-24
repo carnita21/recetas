@@ -1,4 +1,4 @@
-const CACHE_NAME = "recetario-v5";        // archivos de la app
+const CACHE_NAME = "recetario-v6";        // archivos de la app
 const API_CACHE = "recetario-api-v1";      // respuestas de TheMealDB (búsquedas)
 const IMG_CACHE = "recetario-img-v1";      // fotos de las recetas
 const KEEP = [CACHE_NAME, API_CACHE, IMG_CACHE];

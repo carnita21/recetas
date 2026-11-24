@@ -40,6 +40,71 @@ function toggleFavorite(meal) {
   if (showingFavorites) render(favorites);
 }
 
+// Agrega directo (con aviso) o, si ya es favorito, pregunta antes de quitarlo.
+// Devuelve true si cambió algo.
+async function requestToggleFavorite(meal) {
+  if (isFavorite(meal.idMeal)) {
+    const ok = await confirmRemove(meal);
+    if (!ok) return false;
+    toggleFavorite(meal);
+    showToast(`🗑️ "${meal.strMeal}" se eliminó de favoritos`);
+  } else {
+    toggleFavorite(meal);
+    showToast(`★ "${meal.strMeal}" se agregó a favoritos`);
+  }
+  return true;
+}
+
+// ---------- Toast (aviso temporal) ----------
+const toast = document.querySelector("#toast");
+let toastTimer = null;
+function showToast(message) {
+  toast.textContent = message;
+  const canPopover = typeof toast.showPopover === "function";
+  // Se vuelve a abrir para quedar encima de cualquier ventana (dialog) abierta.
+  if (canPopover) {
+    try { toast.hidePopover(); } catch { /* ya estaba oculto */ }
+    toast.showPopover();
+  }
+  toast.classList.remove("show");
+  void toast.offsetWidth; // reinicia la animación
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+    if (canPopover) setTimeout(() => { try { toast.hidePopover(); } catch { } }, 300);
+  }, 2500);
+}
+
+// ---------- Confirmación al eliminar ----------
+const confirmDialog = document.querySelector("#confirmDialog");
+const confirmMsg = document.querySelector("#confirmMsg");
+const confirmOkBtn = document.querySelector("#confirmOkBtn");
+const confirmCancelBtn = document.querySelector("#confirmCancelBtn");
+
+function confirmRemove(meal) {
+  confirmMsg.textContent = `¿Estás seguro de que quieres eliminar "${meal.strMeal}" de tus favoritos?`;
+  return new Promise(resolve => {
+    const finish = result => {
+      confirmOkBtn.removeEventListener("click", onOk);
+      confirmCancelBtn.removeEventListener("click", onCancel);
+      confirmDialog.removeEventListener("close", onCancel);
+      confirmDialog.removeEventListener("click", onBackdrop);
+      if (confirmDialog.open) confirmDialog.close();
+      resolve(result);
+    };
+    const onOk = () => finish(true);
+    const onCancel = () => finish(false);
+    const onBackdrop = event => { if (event.target === confirmDialog) finish(false); };
+    confirmOkBtn.addEventListener("click", onOk);
+    confirmCancelBtn.addEventListener("click", onCancel);
+    confirmDialog.addEventListener("close", onCancel); // tecla Esc
+    confirmDialog.addEventListener("click", onBackdrop);
+    confirmDialog.showModal();
+    confirmCancelBtn.focus();
+  });
+}
+
 // Descarga las fotos de un favorito para que se vean sin internet (las guarda el service worker).
 function cacheImages(meal) {
   [`${meal.strMealThumb}/preview`, meal.strMealThumb].forEach(url =>
@@ -104,7 +169,11 @@ function render(meals) {
     `;
     const checkbox = card.querySelector("input");
     checkbox.addEventListener("click", event => event.stopPropagation());
-    checkbox.addEventListener("change", () => toggleFavorite(meal));
+    checkbox.addEventListener("change", async () => {
+      checkbox.checked = isFavorite(meal.idMeal); // no cambia hasta confirmar
+      await requestToggleFavorite(meal);
+      checkbox.checked = isFavorite(meal.idMeal);
+    });
     card.querySelector(".fav-check").addEventListener("click", event => event.stopPropagation());
 
     card.tabIndex = 0;
@@ -148,8 +217,8 @@ function showRecipeDetails(meal) {
   const detailFavBtn = document.querySelector("#detailFavBtn");
   const paint = () => { detailFavBtn.textContent = isFavorite(meal.idMeal) ? "★ Quitar de favoritos" : "☆ Agregar a favoritos"; };
   paint();
-  detailFavBtn.addEventListener("click", () => {
-    toggleFavorite(meal);
+  detailFavBtn.addEventListener("click", async () => {
+    if (!(await requestToggleFavorite(meal))) return;
     paint();
     if (!showingFavorites) render(lastResults);
   });

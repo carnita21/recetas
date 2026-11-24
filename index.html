@@ -54,6 +54,17 @@
     <button id="closeInstallBtn" class="btn btn-search" type="button">Entendido</button>
   </dialog>
 
+  <dialog id="confirmDialog" class="install-dialog confirm-dialog" aria-labelledby="confirmTitle">
+    <h2 id="confirmTitle">¿Eliminar de favoritos?</h2>
+    <p id="confirmMsg"></p>
+    <div class="confirm-actions">
+      <button id="confirmCancelBtn" class="btn" type="button">Cancelar</button>
+      <button id="confirmOkBtn" class="btn btn-danger" type="button">Sí, eliminar</button>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" popover="manual" role="status" aria-live="polite"></div>
+
   <footer>Recetas e imágenes de <a href="https://www.themealdb.com/" target="_blank" rel="noreferrer">TheMealDB</a></footer>
   <script src="app.js"></script>
 </body>
